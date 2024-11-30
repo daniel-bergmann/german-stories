@@ -138,7 +138,9 @@
       <div>
         <p>
           Crafted with 🧀 by
-          <a target="_blank" href="https://effica.ch/">Effica labs</a>
+          <a target="_blank" href="https://danielbergmann.is"
+            >Daniel Bergmann</a
+          >
         </p>
         <p>&copy; <span id="current-year"></span> - All rights reserved.</p>
       </div>
@@ -149,35 +151,6 @@
         const yearSpan = document.getElementById("current-year")
         const currentYear = new Date().getFullYear()
         yearSpan.textContent = currentYear
-      })
-
-      // Add a sidebar with links to headings
-
-      document.addEventListener("DOMContentLoaded", function () {
-        const sidebar = document.getElementById("sidebar")
-        if (!sidebar) return // Exit if the sidebar element is not found
-
-        // Find all headings in the content area
-        const headings = document.querySelectorAll(".content h2, .content h3")
-        if (headings.length === 0) return // Exit if there are no headings
-
-        // Loop through the headings and add them to the sidebar
-        headings.forEach((heading) => {
-          const title = heading.textContent // Get heading text
-          const id = title
-            .toLowerCase()
-            .replace(/\s+/g, "-")
-            .replace(/[^\w-]/g, "") // Generate an ID
-          heading.id = id // Assign the ID to the heading
-
-          // Create a list item and link for the sidebar
-          const listItem = document.createElement("li")
-          const link = document.createElement("a")
-          link.href = `#${id}` // Anchor link to the heading
-          link.textContent = title // Display the heading text
-          listItem.appendChild(link) // Add the link to the list item
-          sidebar.appendChild(listItem) // Add the list item to the sidebar
-        })
       })
     </script>
   </body>
