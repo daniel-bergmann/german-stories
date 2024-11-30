@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <a href="/">Home</a>
+      <h1>{{title}}</h1>
+      <nav>
+        <a href="a1.html">A1</a>
+        <a href="a2.html">A2</a>
+        <a href="b1.html">B1</a>
+        <a href="b2.html">B2</a>
+      </nav>
+    </header>
+    <main>{{content}}</main>
+    <footer>
+      <div>
+        <p>
+          Crafted with 🧀 by
+          <a target="_blank" href="https://effica.ch/">Daniel Bergmann</a>
+        </p>
+        <p>&copy; <span id="current-year"></span> - All rights reserved.</p>
+      </div>
+    </footer>
+    <script>
+      // get current year
+      document.addEventListener("DOMContentLoaded", function () {
+        const yearSpan = document.getElementById("current-year")
+        const currentYear = new Date().getFullYear()
+        yearSpan.textContent = currentYear
+      })
+    </script>
+  </body>
+</html>
