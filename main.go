@@ -116,24 +116,55 @@ func escapeHTML(input string) string {
 	return input
 }
 
+func copyFile(src, dst string) error {
+	sourceFile, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer sourceFile.Close()
+
+	destinationFile, err := os.Create(dst)
+	if err != nil {
+		return err
+	}
+	defer destinationFile.Close()
+
+	_, err = io.Copy(destinationFile, sourceFile)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+
 func main() {
 	markdownDir := "markdown"
 	outputDir := "output"
 	templateFile := "template.html"
+	stylesFile := "styles.css" // Add this line
 
+	// Read the template file
 	template, err := os.ReadFile(templateFile)
 	if err != nil {
 		fmt.Println("Error reading template file:", err)
 		return
 	}
 
-	// ensuring the output directory exists
+	// Ensure the output directory exists
 	if _, err := os.Stat(outputDir); os.IsNotExist(err) {
 		err := os.Mkdir(outputDir, os.ModePerm)
 		if err != nil {
 			fmt.Println("Error creating output directory:", err)
 			return
 		}
+	}
+
+	// Copy styles.css to output directory
+	err = copyFile(stylesFile, filepath.Join(outputDir, stylesFile))
+	if err != nil {
+		fmt.Println("Error copying styles.css:", err)
+		return
 	}
 
 	files, err := os.ReadDir(markdownDir)
@@ -150,6 +181,7 @@ func main() {
 
 	fmt.Println("All files processed.")
 }
+
 
 func processMarkdownFile(markdownDir, outputDir string, template []byte, fileName string) {
 	inputFilePath := filepath.Join(markdownDir, fileName)
