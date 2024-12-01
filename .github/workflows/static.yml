@@ -38,9 +38,7 @@ jobs:
 
       - name: Build Go project
         run: |
-          go mod tidy
-          go build -o markdown-parser
-          ./markdown-parser
+          go run main.go
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
