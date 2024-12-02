@@ -10,6 +10,57 @@ import (
 	"strings"
 )
 
+
+func main() {
+	markdownDir := "markdown"
+	outputDir := "output"
+	templateFile := "template.html"
+	stylesFile := "styles.css"
+
+	// Read the template file
+	template, err := os.ReadFile(templateFile)
+	if err != nil {
+		fmt.Println("Error reading template file:", err)
+		return
+	}
+
+	// Ensure the output directory exists
+	if _, err := os.Stat(outputDir); os.IsNotExist(err) {
+		err := os.Mkdir(outputDir, os.ModePerm)
+		if err != nil {
+			fmt.Println("Error creating output directory:", err)
+			return
+		}
+	}
+
+	// Copy styles.css to output directory
+	err = copyFile(stylesFile, filepath.Join(outputDir, stylesFile))
+	if err != nil {
+		fmt.Println("Error copying styles.css:", err)
+		return
+	}
+
+	// Process Markdown files
+	files, err := os.ReadDir(markdownDir)
+	if err != nil {
+		fmt.Println("Error reading markdown directory:", err)
+		return
+	}
+
+	for _, file := range files {
+		if strings.HasSuffix(file.Name(), ".md") {
+			processMarkdownFile(markdownDir, outputDir, template, file.Name())
+		}
+	}
+
+	fmt.Println("###")
+	fmt.Println("### Markdown processed! ###")
+	fmt.Println("###")
+
+	// Start HTTP server
+	startHTTPServer(outputDir)
+}
+
 // parseMarkdown converts Markdown to HTML
 func parseMarkdown(input string) string {
 	lines := strings.Split(input, "\n")
@@ -138,59 +189,6 @@ func copyFile(src, dst string) error {
 	return nil
 }
 
-
-func main() {
-	markdownDir := "markdown"
-	outputDir := "output"
-	templateFile := "template.html"
-	stylesFile := "styles.css"
-
-	// Read the template file
-	template, err := os.ReadFile(templateFile)
-	if err != nil {
-		fmt.Println("Error reading template file:", err)
-		return
-	}
-
-	// Ensure the output directory exists
-	if _, err := os.Stat(outputDir); os.IsNotExist(err) {
-		err := os.Mkdir(outputDir, os.ModePerm)
-		if err != nil {
-			fmt.Println("Error creating output directory:", err)
-			return
-		}
-	}
-
-	// Copy styles.css to output directory
-	err = copyFile(stylesFile, filepath.Join(outputDir, stylesFile))
-	if err != nil {
-		fmt.Println("Error copying styles.css:", err)
-		return
-	}
-
-	// Process Markdown files
-	files, err := os.ReadDir(markdownDir)
-	if err != nil {
-		fmt.Println("Error reading markdown directory:", err)
-		return
-	}
-
-	for _, file := range files {
-		if strings.HasSuffix(file.Name(), ".md") {
-			processMarkdownFile(markdownDir, outputDir, template, file.Name())
-		}
-	}
-
-	fmt.Println("###")
-	fmt.Println("### Markdown processed! ###")
-	fmt.Println("###")
-
-	// Start HTTP server
-	startHTTPServer(outputDir)
-}
-
-
-
 func processMarkdownFile(markdownDir, outputDir string, template []byte, fileName string) {
 	inputFilePath := filepath.Join(markdownDir, fileName)
 	markdownFile, err := os.Open(inputFilePath)
@@ -232,15 +230,15 @@ func startHTTPServer(outputDir string) {
 	fmt.Println("Starting HTTP server on http://localhost:8080")
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		// Clean the URL path
+		// Cleaning the URL path
 		path := r.URL.Path
 
 		var filePath string
 		if path == "/" || strings.HasSuffix(path, "/") {
-			// Default to index.html for root or directories
+			// Defaulting to index.html for root or directories
 			filePath = filepath.Join(outputDir, path, "index.html")
 		} else {
-			// Try serving the file directly
+			// serving the file directly
 			filePath = filepath.Join(outputDir, path)
 
 			// If the file doesn't exist, try adding .html
@@ -252,18 +250,19 @@ func startHTTPServer(outputDir string) {
 		// Check if the file exists
 		if _, err := os.Stat(filePath); os.IsNotExist(err) {
 			// Serve custom 404 page
-			w.WriteHeader(http.StatusNotFound)
 			errorPage := filepath.Join(outputDir, "404.html")
 			if _, err := os.Stat(errorPage); os.IsNotExist(err) {
-				// Default 404 message if no custom page is available
-				http.Error(w, "404 - Page Not Found", http.StatusNotFound)
+				// default 404 message if no custom page is available
+				w.WriteHeader(http.StatusNotFound)
+				fmt.Fprint(w, "404 - Page Not Found")
 			} else {
+				w.WriteHeader(http.StatusNotFound)
 				http.ServeFile(w, r, errorPage)
 			}
 			return
 		}
 
-		// Serve the requested file
+		// Serving the requested file
 		http.ServeFile(w, r, filePath)
 	})
 
@@ -272,3 +271,4 @@ func startHTTPServer(outputDir string) {
 		fmt.Println("Error starting HTTP server:", err)
 	}
 }
+
