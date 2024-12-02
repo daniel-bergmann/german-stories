@@ -19,6 +19,7 @@
         <a href="/b1">B1</a>
         <a href="/b2">B2</a>
       </nav>
+      <button id="toggle-dark-mode">Toggle Dark Mode</button>
     </header>
     <main>{{content}}</main>
     <footer>
@@ -33,8 +34,28 @@
       </div>
     </footer>
     <script>
-      // get current year
       document.addEventListener("DOMContentLoaded", function () {
+        const darkModeButton = document.getElementById("toggle-dark-mode")
+        const body = document.body
+
+        const darkModeEnabled = localStorage.getItem("dark-mode") === "true"
+
+        if (darkModeEnabled) {
+          body.setAttribute("data-theme", "dark")
+        }
+
+        // Toggle dark mode on button click
+        darkModeButton.addEventListener("click", () => {
+          if (body.getAttribute("data-theme") === "dark") {
+            body.removeAttribute("data-theme")
+            localStorage.setItem("dark-mode", "false")
+          } else {
+            body.setAttribute("data-theme", "dark")
+            localStorage.setItem("dark-mode", "true")
+          }
+        })
+
+        // Set current year in footer
         const yearSpan = document.getElementById("current-year")
         const currentYear = new Date().getFullYear()
         yearSpan.textContent = currentYear

@@ -1,18 +1,16 @@
+/* Base Styles */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* +++ */
-/* Utility Styles */
-/* +++ */
-
+/* Light Mode (Default) */
 body {
   font-family: Arial, sans-serif;
   line-height: 1.6;
   padding: 20px;
-  background-color: #f9f9f9;
+  background-color: #ededed;
   color: #333;
 }
 
@@ -31,10 +29,7 @@ footer {
   padding-top: 10px;
 }
 
-/* +++++ */
 /* Markdown Content Styling */
-/* +++++ */
-
 h2,
 h3,
 h4 {
@@ -43,7 +38,6 @@ h4 {
 
 p {
   margin: 10px 0;
-
   padding: 5px 0;
   max-width: 600px;
   letter-spacing: 0.5px;
@@ -68,4 +62,19 @@ blockquote {
   color: #666;
   margin: 10px 0;
   font-style: italic;
+}
+
+/* Dark Mode */
+body[data-theme="dark"] {
+  background-color: #202123;
+  color: #e8e8e8;
+}
+
+header[data-theme="dark"] {
+  border-bottom: 2px solid #444;
+}
+
+blockquote[data-theme="dark"] {
+  border-left: 4px solid #666;
+  color: #ccc;
 }
