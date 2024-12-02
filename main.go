@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"net/http"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -142,7 +143,7 @@ func main() {
 	markdownDir := "markdown"
 	outputDir := "output"
 	templateFile := "template.html"
-	stylesFile := "styles.css" // Add this line
+	stylesFile := "styles.css"
 
 	// Read the template file
 	template, err := os.ReadFile(templateFile)
@@ -167,6 +168,7 @@ func main() {
 		return
 	}
 
+	// Process Markdown files
 	files, err := os.ReadDir(markdownDir)
 	if err != nil {
 		fmt.Println("Error reading markdown directory:", err)
@@ -180,7 +182,11 @@ func main() {
 	}
 
 	fmt.Println("All files processed.")
+
+	// Start HTTP server
+	startHTTPServer(outputDir)
 }
+
 
 
 func processMarkdownFile(markdownDir, outputDir string, template []byte, fileName string) {
@@ -217,4 +223,15 @@ func processMarkdownFile(markdownDir, outputDir string, template []byte, fileNam
 	}
 
 	fmt.Println("Generated:", outputFileName)
+}
+
+
+func startHTTPServer(outputDir string) {
+	fmt.Println("Starting HTTP server on http://localhost:8080")
+	http.Handle("/", http.FileServer(http.Dir(outputDir)))
+
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		fmt.Println("Error starting HTTP server:", err)
+	}
 }
