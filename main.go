@@ -181,7 +181,9 @@ func main() {
 		}
 	}
 
-	fmt.Println("All files processed.")
+	fmt.Println("###")
+	fmt.Println("### Markdown processed! ###")
+	fmt.Println("###")
 
 	// Start HTTP server
 	startHTTPServer(outputDir)
@@ -228,7 +230,42 @@ func processMarkdownFile(markdownDir, outputDir string, template []byte, fileNam
 
 func startHTTPServer(outputDir string) {
 	fmt.Println("Starting HTTP server on http://localhost:8080")
-	http.Handle("/", http.FileServer(http.Dir(outputDir)))
+
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		// Clean the URL path
+		path := r.URL.Path
+
+		var filePath string
+		if path == "/" || strings.HasSuffix(path, "/") {
+			// Default to index.html for root or directories
+			filePath = filepath.Join(outputDir, path, "index.html")
+		} else {
+			// Try serving the file directly
+			filePath = filepath.Join(outputDir, path)
+
+			// If the file doesn't exist, try adding .html
+			if _, err := os.Stat(filePath); os.IsNotExist(err) {
+				filePath = filepath.Join(outputDir, path+".html")
+			}
+		}
+
+		// Check if the file exists
+		if _, err := os.Stat(filePath); os.IsNotExist(err) {
+			// Serve custom 404 page
+			w.WriteHeader(http.StatusNotFound)
+			errorPage := filepath.Join(outputDir, "404.html")
+			if _, err := os.Stat(errorPage); os.IsNotExist(err) {
+				// Default 404 message if no custom page is available
+				http.Error(w, "404 - Page Not Found", http.StatusNotFound)
+			} else {
+				http.ServeFile(w, r, errorPage)
+			}
+			return
+		}
+
+		// Serve the requested file
+		http.ServeFile(w, r, filePath)
+	})
 
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
