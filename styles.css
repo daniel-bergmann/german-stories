@@ -12,6 +12,12 @@ body {
   color: #333;
 }
 
+main {
+  /* max-width: 800px; */
+  margin: 0 auto;
+  padding: 20px;
+}
+
 header {
   display: flex;
   justify-content: space-between;
@@ -53,7 +59,7 @@ header button {
 }
 
 header button:hover {
-  background-color: #0d8264;
+  background-color: #555;
 }
 
 /* Dark Mode Header */
@@ -72,7 +78,7 @@ header button:hover {
 }
 
 [data-theme="dark"] header button:hover {
-  background-color: #555;
+  background-color: #0d8264;
 }
 
 footer {

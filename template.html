@@ -19,7 +19,7 @@
         <a href="/b1">B1</a>
         <a href="/b2">B2</a>
       </nav>
-      <button id="toggle-dark-mode">Theme</button>
+      <button id="toggle-dark-mode">Light</button>
     </header>
     <main>{{content}}</main>
     <button id="back-to-top" title="Back to top">↑</button>
@@ -46,9 +46,9 @@
         // Set initial theme and button text
         if (darkModeEnabled) {
           body.setAttribute("data-theme", "dark")
-          darkModeButton.textContent = "Light Mode"
+          darkModeButton.textContent = "Light"
         } else {
-          darkModeButton.textContent = "Dark Mode"
+          darkModeButton.textContent = "Dark"
         }
 
         // Toggle dark mode on button click
@@ -56,11 +56,11 @@
           if (body.getAttribute("data-theme") === "dark") {
             body.removeAttribute("data-theme")
             localStorage.setItem("dark-mode", "false")
-            darkModeButton.textContent = "Dark Mode"
+            darkModeButton.textContent = "Dark"
           } else {
             body.setAttribute("data-theme", "dark")
             localStorage.setItem("dark-mode", "true")
-            darkModeButton.textContent = "Light Mode"
+            darkModeButton.textContent = "Light"
           }
         })
 
