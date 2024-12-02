@@ -53,9 +53,6 @@ func main() {
 		}
 	}
 
-	fmt.Println("###")
-	fmt.Println("### Markdown processed! ###")
-	fmt.Println("###")
 
 	// Start HTTP server
 	startHTTPServer(outputDir)
@@ -271,4 +268,3 @@ func startHTTPServer(outputDir string) {
 		fmt.Println("Error starting HTTP server:", err)
 	}
 }
-
