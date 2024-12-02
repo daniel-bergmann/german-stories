@@ -1,11 +1,9 @@
-/* Base Styles */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Light Mode (Default) */
 body {
   font-family: Arial, sans-serif;
   line-height: 1.6;
@@ -15,10 +13,66 @@ body {
 }
 
 header {
-  text-align: center;
-  margin-bottom: 30px;
-  padding-bottom: 10px;
-  border-bottom: 2px solid #e2e2e2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: inherit;
+  color: #333;
+  padding: 15px 30px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+header a {
+  text-decoration: none;
+  margin: 0 10px;
+  color: #333;
+  font-weight: bold;
+}
+
+header a:hover {
+  text-decoration: underline;
+}
+
+header nav {
+  display: flex;
+  align-items: center;
+}
+
+header button {
+  background-color: #10a37f;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s ease-in-out;
+}
+
+header button:hover {
+  background-color: #0d8264;
+}
+
+/* Dark Mode Header */
+[data-theme="dark"] header {
+  background-color: #202123;
+  color: rgb(173, 173, 173);
+}
+
+[data-theme="dark"] header a {
+  color: rgb(173, 173, 173);
+}
+
+[data-theme="dark"] header button {
+  background-color: #666;
+  color: white;
+}
+
+[data-theme="dark"] header button:hover {
+  background-color: #555;
 }
 
 footer {
