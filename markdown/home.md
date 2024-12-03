@@ -1,4 +1,4 @@
-## Comprehensible input
+# Comprehensible input
 
 In language learning, one of the most effective ways to improve is through comprehensible input: reading and listening to content that is slightly challenging but still understandable. German Stories is designed with this principle in mind, offering you engaging, level-appropriate texts that let you absorb new vocabulary and grammar naturally.
 
