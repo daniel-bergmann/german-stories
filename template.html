@@ -97,6 +97,11 @@
           window.scrollTo({ top: 0, behavior: "smooth" })
         })
 
+        // check if page is "/index.html" and hide TOC
+        if (window.location.pathname === "/index.html") {
+          document.getElementById("toc").style.display = "none"
+        }
+
         // Set current year in footer
         const yearSpan = document.getElementById("current-year")
         const currentYear = new Date().getFullYear()
