@@ -55,9 +55,10 @@ func main() {
 }
 
 // parseMarkdown converts Markdown to HTML
-func parseMarkdown(input string) string {
+func parseMarkdown(input string) (string, []string) {
 	lines := strings.Split(input, "\n")
 	var htmlLines []string
+	var toc []string
 	var inList, inCodeBlock bool
 
 	// Regex patterns for Markdown elements
@@ -83,9 +84,15 @@ func parseMarkdown(input string) string {
 
 		case headingPattern.MatchString(line):
 			matches := headingPattern.FindStringSubmatch(line)
-			level := len(matches[1])
+			level := len(matches[1]) // Number of # defines heading level
 			content := matches[2]
-			htmlLines = append(htmlLines, fmt.Sprintf("<h%d>%s</h%d>", level, content, level))
+			if level == 2 { // Only add h2 headings to TOC
+				anchor := strings.ReplaceAll(strings.ToLower(content), " ", "-")
+				htmlLines = append(htmlLines, fmt.Sprintf(`<h%d id="%s">%s</h%d>`, level, anchor, content, level))
+				toc = append(toc, fmt.Sprintf(`<a href="#%s">%s</a>`, anchor, content))
+			} else {
+				htmlLines = append(htmlLines, fmt.Sprintf("<h%d>%s</h%d>", level, content, level))
+			}
 
 		case blockQuotePattern.MatchString(line):
 			matches := blockQuotePattern.FindStringSubmatch(line)
@@ -132,8 +139,9 @@ func parseMarkdown(input string) string {
 		htmlLines = append(htmlLines, "</ul>")
 	}
 
-	return strings.Join(htmlLines, "\n")
+	return strings.Join(htmlLines, "\n"), toc
 }
+
 
 // parseInline handles inline Markdown elements
 func parseInline(input string) string {
@@ -194,7 +202,8 @@ func processMarkdownFile(markdownDir, outputDir string, template []byte, fileNam
 		return
 	}
 
-	htmlContent := parseMarkdown(string(markdownContent))
+	htmlContent, headings := parseMarkdown(string(markdownContent))
+	toc := strings.Join(headings, "\n")
 
 	title := strings.TrimSuffix(fileName, ".md")
 	if title == "home" {
@@ -205,6 +214,7 @@ func processMarkdownFile(markdownDir, outputDir string, template []byte, fileNam
 
 	finalContent := strings.ReplaceAll(string(template), "{{title}}", strings.Title(title))
 	finalContent = strings.ReplaceAll(finalContent, "{{content}}", htmlContent)
+	finalContent = strings.ReplaceAll(finalContent, "{{toc}}", toc)
 
 	err = os.WriteFile(outputFilePath, []byte(finalContent), os.ModePerm)
 	if err != nil {
@@ -214,3 +224,4 @@ func processMarkdownFile(markdownDir, outputDir string, template []byte, fileNam
 
 	fmt.Println("Generated:", outputFileName)
 }
+
