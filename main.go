@@ -188,40 +188,46 @@ func copyFile(src, dst string) error {
 
 // processMarkdownFile processes a Markdown file into HTML
 func processMarkdownFile(markdownDir, outputDir string, template []byte, fileName string) {
-	inputFilePath := filepath.Join(markdownDir, fileName)
-	markdownFile, err := os.Open(inputFilePath)
-	if err != nil {
-		fmt.Println("Error opening file:", fileName, err)
-		return
-	}
-	defer markdownFile.Close()
+    inputFilePath := filepath.Join(markdownDir, fileName)
+    markdownFile, err := os.Open(inputFilePath)
+    if err != nil {
+        fmt.Println("Error opening file:", fileName, err)
+        return
+    }
+    defer markdownFile.Close()
 
-	markdownContent, err := io.ReadAll(markdownFile)
-	if err != nil {
-		fmt.Println("Error reading file:", fileName, err)
-		return
-	}
+    markdownContent, err := io.ReadAll(markdownFile)
+    if err != nil {
+        fmt.Println("Error reading file:", fileName, err)
+        return
+    }
 
-	htmlContent, headings := parseMarkdown(string(markdownContent))
-	toc := strings.Join(headings, "\n")
+    htmlContent, headings := parseMarkdown(string(markdownContent))
+    title := strings.TrimSuffix(fileName, ".md")
+    hasToc := len(headings) > 0 && title != "index" // TOC only for non-index files
 
-	title := strings.TrimSuffix(fileName, ".md")
-	if title == "home" {
-		title = "index"
-	}
-	outputFileName := fmt.Sprintf("%s.html", title)
-	outputFilePath := filepath.Join(outputDir, outputFileName)
+    outputFileName := fmt.Sprintf("%s.html", title)
+    outputFilePath := filepath.Join(outputDir, outputFileName)
 
-	finalContent := strings.ReplaceAll(string(template), "{{title}}", strings.Title(title))
-	finalContent = strings.ReplaceAll(finalContent, "{{content}}", htmlContent)
-	finalContent = strings.ReplaceAll(finalContent, "{{toc}}", toc)
+    finalContent := strings.ReplaceAll(string(template), "{{title}}", strings.Title(title))
+    finalContent = strings.ReplaceAll(finalContent, "{{content}}", htmlContent)
 
-	err = os.WriteFile(outputFilePath, []byte(finalContent), os.ModePerm)
-	if err != nil {
-		fmt.Println("Error writing file:", outputFileName, err)
-		return
-	}
+    if hasToc {
+        finalContent = strings.ReplaceAll(finalContent, "{{toc}}", strings.Join(headings, "\n"))
+        finalContent = strings.ReplaceAll(finalContent, "{{if .HasToc}}", "")
+        finalContent = strings.ReplaceAll(finalContent, "{{end}}", "")
+    } else {
+        finalContent = strings.ReplaceAll(finalContent, "{{toc}}", "")
+        finalContent = strings.ReplaceAll(finalContent, "{{if .HasToc}}", "<!--")
+        finalContent = strings.ReplaceAll(finalContent, "{{end}}", "-->")
+    }
 
-	fmt.Println("Generated:", outputFileName)
+    err = os.WriteFile(outputFilePath, []byte(finalContent), os.ModePerm)
+    if err != nil {
+        fmt.Println("Error writing file:", outputFileName, err)
+        return
+    }
+
+    fmt.Println("Generated:", outputFileName)
 }
 
