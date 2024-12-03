@@ -17,13 +17,9 @@ body {
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
-  /* display: flex; */
-  /* justify-content: center; */
-  /* align-items: center; */
 }
 main {
   max-width: 800px;
-  /* margin: 0 auto; */
   padding: 20px;
   margin-left: 220px;
 }
@@ -53,10 +49,11 @@ main {
   text-decoration: none;
   text-decoration: underline;
   color: inherit;
+  color: rgb(124, 124, 124);
 }
 
 #toc a:hover {
-  opacity: 0.7;
+  color: inherit;
 }
 
 header {
@@ -120,6 +117,15 @@ header button:hover {
 
 [data-theme="dark"] header button:hover {
   background-color: #0d8264;
+}
+
+header a .logo {
+  width: 32px;
+  height: auto;
+}
+
+[data-theme="dark"] header {
+  color: rgb(173, 173, 173);
 }
 
 footer {
