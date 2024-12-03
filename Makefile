@@ -5,3 +5,6 @@ git:
 	@git push origin main
 build: 
 	@go run main.go
+
+server:
+	@go run server.go -server
