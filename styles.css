@@ -87,7 +87,7 @@ header nav {
 header button {
   background-color: inherit;
   color: inherit;
-  border: 2px solid inherit;
+  border: 1px solid inherit;
   padding: 8px 16px;
   border-radius: 5px;
   cursor: pointer;
