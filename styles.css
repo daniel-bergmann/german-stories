@@ -85,9 +85,9 @@ header nav {
 }
 
 header button {
-  background-color: #10a37f;
-  color: white;
-  border: none;
+  background-color: inherit;
+  color: inherit;
+  border: 2px solid inherit;
   padding: 8px 16px;
   border-radius: 5px;
   cursor: pointer;
@@ -97,7 +97,7 @@ header button {
 }
 
 header button:hover {
-  background-color: #555;
+  background-color: inherit;
 }
 
 /* Dark Mode Header */
@@ -111,12 +111,12 @@ header button:hover {
 }
 
 [data-theme="dark"] header button {
-  background-color: #666;
-  color: white;
+  background-color: inherit;
+  color: inherit;
 }
 
 [data-theme="dark"] header button:hover {
-  background-color: #0d8264;
+  background-color: inherit;
 }
 
 header a .logo {
