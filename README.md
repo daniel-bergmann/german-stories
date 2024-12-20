@@ -2,7 +2,7 @@
 
 Comprehensible input is simply an instructional shift when teaching material provides input where students understand most, but not all, of the language.
 
-# The markdown to HTML converter
+## The project
 
 This project is a simple Markdown-to-HTML converter written in Go. It includes functionality to process Markdown files, generate corresponding HTML files using a template, and serve the generated files through a lightweight HTTP server. The project also includes a `Makefile` for convenient build and deployment.
 
