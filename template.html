@@ -98,10 +98,31 @@
         })
 
         // Set current year in footer
-        const yearSpan = document.getElementById("current-year")
-        const currentYear = new Date().getFullYear()
-        yearSpan.textContent = currentYear
-      })
+        const yearSpan = document.getElementById("current-year");
+        const currentYear = new Date().getFullYear();
+        yearSpan.textContent = currentYear;
+
+        // Smooth scrolling for Table of Contents
+        document.querySelectorAll('#toc a').forEach(link => {
+          link.addEventListener('click', event => {
+            event.preventDefault(); // Prevent default anchor click behavior
+
+            const targetId = link.getAttribute('href').substring(1); // Get target ID
+            const targetElement = document.getElementById(targetId);
+
+            if (targetElement) {
+              const headerOffset = 70; // Adjust this value based on header's height
+              const elementPosition = targetElement.getBoundingClientRect().top + window.scrollY;
+              const offsetPosition = elementPosition - headerOffset;
+
+              window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+              });
+            }
+          });
+        });
+      });
     </script>
   </body>
 </html>
