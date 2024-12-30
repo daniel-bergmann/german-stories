@@ -111,7 +111,7 @@
             const targetElement = document.getElementById(targetId);
 
             if (targetElement) {
-              const headerOffset = 70; // Adjust this value based on header's height
+              const headerOffset = 135; // Adjust this value based on header's height
               const elementPosition = targetElement.getBoundingClientRect().top + window.scrollY;
               const offsetPosition = elementPosition - headerOffset;
 
@@ -122,6 +122,154 @@
             }
           });
         });
+
+      const mainContent = document.querySelector("main");
+
+      // Initialize variables to manage speech synthesis state
+      let speechQueue = []; // Queue to hold chunks of text to be spoken
+      let isSpeaking = false; // Flag to indicate if speech synthesis is active
+      let currentButton = null; // Reference to the currently active voice button
+      let cancelInitiated = false; // Flag to indicate if speech synthesis cancellation is in progress
+
+      // Check if the main content section exists
+      if (mainContent) {
+      const stories = mainContent.querySelectorAll("h2");
+
+      // Iterate through each story heading to add a voice button
+      stories.forEach((heading) => {
+        const voiceButton = document.createElement("button");
+        voiceButton.textContent = `Listen to Story: ${heading.textContent.trim()}`;
+        voiceButton.classList.add("voice-button");
+
+        // Add click event listener to the voice button
+        voiceButton.addEventListener("click", () => {
+          if (!('speechSynthesis' in window)) {
+            alert("Speech synthesis is not supported in your browser.");
+            return;
+          }
+
+          // Handle stopping the current story if already playing
+          if (currentButton === voiceButton && isSpeaking) {
+            cancelInitiated = true;
+            window.speechSynthesis.cancel();
+            isSpeaking = false;
+            currentButton.textContent = `Listen to Story: ${heading.textContent.trim()}`;
+            speechQueue.length = 0;
+            return;
+          }
+
+          // Handle starting a new story
+          if (isSpeaking) {
+            cancelInitiated = true;
+            window.speechSynthesis.cancel();
+            speechQueue = []; // Reset the queue for the new story
+            isSpeaking = false; // Update speaking flag
+            if (currentButton) {
+              currentButton.textContent = `Listen to Story: ${currentButton.dataset.storyName}`;
+            }
+          }
+
+          // Set the current button and update its text
+          currentButton = voiceButton;
+          currentButton.dataset.storyName = heading.textContent.trim();
+          currentButton.textContent = "Stop Listening";
+
+          // Extract the story text and split it into manageable chunks
+          const storyText = extractStoryText(heading);
+          speechQueue = splitTextIntoChunks(storyText, 200);
+          speakNextChunk();
+          });
+
+        heading.style.display = "inline-block";
+        heading.style.marginLeft = "10px";
+        heading.insertAdjacentElement("beforebegin", voiceButton);
+      });
+      }
+
+      function extractStoryText(heading) {
+        let storyText = heading.textContent.trim();
+        let sibling = heading.nextElementSibling;
+
+        // Traverse siblings until another heading (H2) is encountered
+        while (sibling && sibling.tagName !== "H2") {
+          if (sibling.tagName === "P") {
+            storyText += ` ${sibling.textContent.trim()}`;
+          }
+        sibling = sibling.nextElementSibling;
+        }
+
+        return storyText;
+      }
+
+      //Speak the next chunk of text from the speech queue.
+      function speakNextChunk() {
+        if (!speechQueue.length) {
+        isSpeaking = false; // Update speaking flag
+        if (currentButton) {
+          currentButton.textContent = `Listen to Story: ${currentButton.dataset.storyName}`;
+        }
+        return;
+      }
+
+      // Get the next chunk from the queue and create an utterance
+      const chunk = speechQueue.shift();
+      const utterance = new SpeechSynthesisUtterance(chunk);
+      utterance.lang = "de-DE";
+
+      // Event listener for when the current chunk finishes
+      utterance.onend = () => {
+        if (!cancelInitiated) {
+          speakNextChunk();
+        } else {
+          cancelInitiated = false; // Reset cancellation flag
+        }
+      };
+
+      // Event listener for handling errors during speech synthesis
+      utterance.onerror = (error) => {
+        console.error("Speech synthesis error:", error.error);
+
+        if (!cancelInitiated) {
+          alert("An error occurred while trying to play the story.");
+        }
+
+        cancelInitiated = false;
+        isSpeaking = false; // Update speaking flag
+        if (currentButton) {
+          currentButton.textContent = `Listen to Story: ${currentButton.dataset.storyName}`;
+        }
+      };
+
+      // Start speaking the current chunk
+      isSpeaking = true;
+      window.speechSynthesis.speak(utterance);
+      }
+
+
+      //Split a large block of text into smaller chunks for speech synthesis.
+      //Ensures that each chunk does not exceed the specified maximum length.
+      function splitTextIntoChunks(text, maxLength) {
+        const sentences = text.split(/([.!?])/);
+        const chunks = [];
+        let currentChunk = "";
+
+        // Combine sentences into chunks while respecting the maximum length
+        sentences.forEach((sentence) => {
+          if (currentChunk.length + sentence.length <= maxLength) {
+            currentChunk += sentence;
+          } else {
+            chunks.push(currentChunk.trim());
+            currentChunk = sentence;
+          }
+        });
+
+        // Add the last chunk if any text remains
+        if (currentChunk) {
+          chunks.push(currentChunk.trim());
+        }
+
+        return chunks;
+      }
       });
     </script>
   </body>
