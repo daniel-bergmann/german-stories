@@ -211,23 +211,29 @@ blockquote[data-theme="dark"] {
 
 .voice-button {
   margin-top: 10px;
-  padding: 10px;
+  padding: 0;
   border: none;
-  border-radius: 5px;
-  background-color: #4caf50; /* Green background */
-  color: white;
+  border-radius: 50%;
+  background-color: #4caf50;
   cursor: pointer;
-  display: block;
-  font-size: 16px;
-  font-weight: bold;
-  text-align: center;
-  width: auto;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  transition: background-color 0.3s ease-in-out;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 .voice-button:hover {
-  background-color: #45a049; /* Darker green on hover */
+  background-color: #45a049;
 }
 
 .voice-button:active {
-  background-color: #3e8e41; /* Even darker green on click */
+  background-color: #3e8e41;
+}
+
+.voice-button svg {
+  width: 24px;
+  height: 24px;
 }
