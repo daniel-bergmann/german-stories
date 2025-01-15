@@ -34,14 +34,12 @@
       </nav>
       <button id="toggle-dark-mode">Light</button>
     </header>
-
     <section class="main-content">
       <aside>
         <nav id="toc">{{toc}}</nav>
       </aside>
       <main>{{content}}</main>
     </section>
-
     <button id="back-to-top" title="Back to top">↑</button>
     <footer>
       <div>
@@ -54,15 +52,16 @@
         <p>&copy; <span id="current-year"></span> - All rights reserved.</p>
       </div>
     </footer>
+    <script src="./js/voiceover.js">
+
+    </script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const darkModeButton = document.getElementById("toggle-dark-mode")
         const body = document.body
         const backToTopButton = document.getElementById("back-to-top")
-
         // Check dark mode preference
         const darkModeEnabled = localStorage.getItem("dark-mode") === "true"
-
         // Set initial theme and button text
         if (darkModeEnabled) {
           body.setAttribute("data-theme", "dark")
@@ -70,7 +69,6 @@
         } else {
           darkModeButton.textContent = "Dark"
         }
-
         // Toggle dark mode on button click
         darkModeButton.addEventListener("click", () => {
           if (body.getAttribute("data-theme") === "dark") {
@@ -83,7 +81,6 @@
             darkModeButton.textContent = "Light"
           }
         })
-
         // Back to Top Button Functionality
         window.addEventListener("scroll", () => {
           if (window.scrollY > 200) {
@@ -92,26 +89,22 @@
             backToTopButton.style.display = "none"
           }
         })
-
         backToTopButton.addEventListener("click", () => {
           window.scrollTo({ top: 0, behavior: "smooth" })
         })
-
         // Set current year in footer
         const yearSpan = document.getElementById("current-year");
         const currentYear = new Date().getFullYear();
         yearSpan.textContent = currentYear;
-
         // Smooth scrolling for Table of Contents
         document.querySelectorAll('#toc a').forEach(link => {
           link.addEventListener('click', event => {
             event.preventDefault(); // Prevent default anchor click behavior
-
             const targetId = link.getAttribute('href').substring(1); // Get target ID
             const targetElement = document.getElementById(targetId);
 
             if (targetElement) {
-              const headerOffset = 70; // Adjust this value based on header's height
+              const headerOffset = 80; // Adjust this value based on header's height
               const elementPosition = targetElement.getBoundingClientRect().top + window.scrollY;
               const offsetPosition = elementPosition - headerOffset;
 
@@ -122,6 +115,8 @@
             }
           });
         });
+        const mainContent= document.querySelector("main");
+        voice(mainContent);
       });
     </script>
   </body>

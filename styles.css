@@ -208,3 +208,32 @@ blockquote[data-theme="dark"] {
 #back-to-top:hover {
   background-color: #333;
 }
+
+.voice-button {
+  margin-top: 10px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background-color: #4caf50;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  transition: background-color 0.3s ease-in-out;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.voice-button:hover {
+  background-color: #45a049;
+}
+
+.voice-button:active {
+  background-color: #3e8e41;
+}
+
+.voice-button svg {
+  width: 24px;
+  height: 24px;
+}

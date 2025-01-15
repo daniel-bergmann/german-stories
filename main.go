@@ -31,6 +31,23 @@ func main() {
 		}
 	}
 
+	// Ensure the js directory exists in the output
+    jsDir := filepath.Join(outputDir, "js")
+    if _, err := os.Stat(jsDir); os.IsNotExist(err) {
+        err := os.Mkdir(jsDir, os.ModePerm)
+    if err != nil {
+        fmt.Println("Error creating js directory:", err)
+        return
+    }
+    }
+
+    // Copy voiceover.js to the output/js directory
+    err = copyFile("js/voiceover.js", filepath.Join(jsDir, "voiceover.js"))
+    if err != nil {
+        fmt.Println("Error copying voiceover.js:", err)
+        return
+    }
+
 	// Copy styles.css to output directory
 	err = copyFile(stylesFile, filepath.Join(outputDir, stylesFile))
 	if err != nil {
